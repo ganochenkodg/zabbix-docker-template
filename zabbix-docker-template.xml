@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2021-01-12T10:19:08Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template App Docker</template>
+            <name>Template App Docker</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Docker</name>
+                </application>
+                <application>
+                    <name>Docker container count</name>
+                </application>
+                <application>
+                    <name>Docker cpu</name>
+                </application>
+                <application>
+                    <name>Docker disk usage</name>
+                </application>
+                <application>
+                    <name>Docker memory</name>
+                </application>
+                <application>
+                    <name>Docker netin</name>
+                </application>
+                <application>
+                    <name>Docker netout</name>
+                </application>
+                <application>
+                    <name>Docker status</name>
+                </application>
+                <application>
+                    <name>Docker uptime</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Containers count</name>
+                    <key>docker.containers.count</key>
+                    <delay>300</delay>
+                    <history>3d</history>
+                    <trends>30d</trends>
+                    <applications>
+                        <application>
+                            <name>Docker</name>
+                        </application>
+                        <application>
+                            <name>Docker container count</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Docker containers discovery</name>
+                    <key>docker.containers.discovery</key>
+                    <delay>30</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#CONTAINERNAME}</macro>
+                                <value>(.*POD.*)</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1h</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} cpu:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, cpu]</key>
+                            <delay>20</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker cpu</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Service state</name>
+                            </valuemap>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{min(2m)}&gt;{$DOCKER_CPU_THRESHOLD}</expression>
+                                    <name>Container {#CONTAINERNAME}: cpu usage over {$DOCKER_CPU_THRESHOLD} % for 2m</name>
+                                    <priority>AVERAGE</priority>
+                                    <manual_close>YES</manual_close>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{min(5m)}&gt;{$DOCKER_CPU_THRESHOLD}</expression>
+                                    <name>Container {#CONTAINERNAME}: cpu usage over {$DOCKER_CPU_THRESHOLD} % for 5m</name>
+                                    <priority>HIGH</priority>
+                                    <manual_close>YES</manual_close>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} disk usage:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, disk]</key>
+                            <delay>600</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <units>Bytes</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker disk usage</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} memory:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, memory]</key>
+                            <delay>20</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <units>Bytes</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker memory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>1</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} incoming traffic:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, netin]</key>
+                            <delay>300</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <units>B/s</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker netin</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} outgoing traffic:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, netout]</key>
+                            <delay>300</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <units>B/s</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker netout</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} status:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, status]</key>
+                            <delay>60</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker status</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} uptime:</name>
+                            <key>docker.containers[{#CONTAINERNAME}, uptime]</key>
+                            <delay>60</delay>
+                            <history>3d</history>
+                            <trends>30d</trends>
+                            <units>uptime</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker uptime</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>Container {#CONTAINERNAME} CPU usage</name>
+                            <width>600</width>
+                            <graph_items>
+                                <graph_item>
+                                    <color>199C0D</color>
+                                    <item>
+                                        <host>Template App Docker</host>
+                                        <key>docker.containers[{#CONTAINERNAME}, cpu]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <name>Container {#CONTAINERNAME} memory usage</name>
+                            <width>600</width>
+                            <graph_items>
+                                <graph_item>
+                                    <color>199C0D</color>
+                                    <item>
+                                        <host>Template App Docker</host>
+                                        <key>docker.containers[{#CONTAINERNAME}, memory]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$DOCKER_CPU_THRESHOLD}</macro>
+                    <value>95</value>
+                    <description>cpu limit for trigger</description>
+                </macro>
+            </macros>
+            <screens>
+                <screen>
+                    <name>Containers CPU usage</name>
+                    <hsize>1</hsize>
+                    <vsize>1</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>20</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Container {#CONTAINERNAME} CPU usage</name>
+                                <host>Template App Docker</host>
+                            </resource>
+                            <width>400</width>
+                            <height>200</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+                <screen>
+                    <name>Containers memory usage</name>
+                    <hsize>1</hsize>
+                    <vsize>1</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>20</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Container {#CONTAINERNAME} memory usage</name>
+                                <host>Template App Docker</host>
+                            </resource>
+                            <width>400</width>
+                            <height>200</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+            </screens>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>Service state</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Down</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Up</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
