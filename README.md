@@ -14,7 +14,8 @@ The zabbix user must have enough privileges to monitor docker
 ## Installation
 
 - copy `docker.conf` to `/etc/zabbix/zabbix_agentd.cond.d/`
-- copy `docker.sh` to `/etc/zabbix/scripts` and execute `chmod a+x /etc/zabbix/scripts/docker.sh`
+- copy `docker.sh` to `/etc/zabbix/scripts/` and execute `chmod a+x /etc/zabbix/scripts/docker.sh`
+- Go to `Configuration -> Templates` and import `zabbix-docker-template.xml`
 
 ## Usage
 
